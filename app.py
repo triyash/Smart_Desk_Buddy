@@ -49,6 +49,11 @@ def receive_sensor_data():
 
     features = extract_features(buffer.get())
 
+    imu_mean, imu_std, pitch, roll = features
+
+# 🔥 Calculate score
+    posture_score = calculate_posture_score(imu_std, pitch, roll)
+
     features_np = np.array([features])
 
 
@@ -75,10 +80,34 @@ def receive_sensor_data():
 
 
     return jsonify({
-        "focus_state":prediction,
-        "confidence":confidence
-    })
+    "focus_state": prediction,
+    "confidence": confidence,
+    "posture_score": posture_score
+})
 
+def calculate_posture_score(imu_std, pitch, roll):
+
+    score = 100
+
+    # Penalize movement (unstable posture)
+    if imu_std > 1.2:
+        score -= 30
+    elif imu_std > 0.8:
+        score -= 15
+
+    # Penalize forward/back tilt
+    if abs(pitch) > 0.4:
+        score -= 25
+    elif abs(pitch) > 0.2:
+        score -= 10
+
+    # Penalize left/right tilt
+    if abs(roll) > 0.4:
+        score -= 25
+    elif abs(roll) > 0.2:
+        score -= 10
+
+    return max(0, score)
 
 @app.route("/focus_history")
 def focus_history():

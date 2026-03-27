@@ -72,7 +72,7 @@ color:#dc2626;
 }
 
 /* Values */
-#confidence, #hr{
+#confidence, #score{
 font-size:20px;
 font-weight:500;
 margin-top:8px;
@@ -111,6 +111,7 @@ max-width:1000px;
 <p>Focus Dashboard</p>
 </div>
 
+<!-- Top Cards -->
 <div class="row text-center">
 
 <div class="col-md">
@@ -129,8 +130,8 @@ max-width:1000px;
 
 <div class="col-md">
 <div class="card p-3">
-<h5>Heart Rate</h5>
-<div id="hr">-</div>
+<h5>Posture Score</h5>
+<div id="score">-</div>
 </div>
 </div>
 
@@ -138,6 +139,7 @@ max-width:1000px;
 
 <br>
 
+<!-- Summary Cards -->
 <div class="row text-center">
 
 <div class="col-md">
@@ -158,6 +160,7 @@ max-width:1000px;
 
 <br>
 
+<!-- Chart -->
 <div class="card p-4">
 
 <h4 class="text-center mb-3">Focus Trend</h4>
@@ -183,6 +186,32 @@ if(!data || data.length === 0) return;
 
 const latest = data[0];
 
+
+// ✅ Posture Score
+let score = latest.posture_score;
+
+let text = score + "/100";
+
+if(score > 85)
+text += " ✅";
+else if(score > 60)
+text += " 👍";
+else
+text += " ⚠️";
+
+document.getElementById("score").innerText = text;
+
+// Optional color change
+let scoreEl = document.getElementById("score");
+if(score > 85)
+scoreEl.style.color = "#16a34a";
+else if(score > 60)
+scoreEl.style.color = "#f59e0b";
+else
+scoreEl.style.color = "#dc2626";
+
+
+// Focus
 document.getElementById("focus").innerText = latest.prediction;
 
 if(latest.prediction === "Focused")
@@ -190,12 +219,13 @@ document.getElementById("focus").className="focus focused";
 else
 document.getElementById("focus").className="focus distracted";
 
+
+// Confidence
 document.getElementById("confidence").innerText =
 (latest.confidence*100).toFixed(1) + "%";
 
-document.getElementById("hr").innerText =
-latest.hr_mean + " bpm";
 
+// Counts
 let focusCount = 0;
 let distractCount = 0;
 
@@ -209,8 +239,8 @@ distractCount++;
 document.getElementById("focusCount").innerText = focusCount;
 document.getElementById("distractCount").innerText = distractCount;
 
-/* Chart Data */
 
+// Chart
 const recentData = data.slice(0,10).reverse();
 
 const labels = recentData.map(d=>{
@@ -219,17 +249,11 @@ return date.toLocaleTimeString();
 });
 
 const focusValues = recentData.map(d=>{
-if(d.prediction === "Focused")
-return d.confidence*100;
-else
-return null;
+return d.prediction === "Focused" ? d.confidence*100 : null;
 });
 
 const distractValues = recentData.map(d=>{
-if(d.prediction === "Distracted")
-return d.confidence*100;
-else
-return null;
+return d.prediction === "Distracted" ? d.confidence*100 : null;
 });
 
 if(chart) chart.destroy();
@@ -301,5 +325,3 @@ setInterval(loadData,3000);
 </body>
 
 </html>
-
->>>>>>> d26b5eeab7f48352040b63fdd4dc1d4d17415b47
