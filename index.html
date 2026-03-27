@@ -11,94 +11,91 @@
 <style>
 
 body{
-background: linear-gradient(135deg,#0f172a,#1e293b);
+background: linear-gradient(135deg,#e0e7ff,#f8fafc);
 font-family: 'Inter', sans-serif;
-color:#e2e8f0;
+color:#1e293b;
 margin:0;
 }
 
 /* Header */
 .header{
 text-align:center;
-padding:30px 10px;
+padding:25px 10px;
 }
 
 .header h1{
-font-size:32px;
+font-size:28px;
 font-weight:600;
-letter-spacing:1px;
 }
 
 .header p{
-color:#94a3b8;
+color:#64748b;
 margin-top:5px;
 }
 
-/* Cards */
+/* Glass Cards */
 .card{
-background: rgba(255,255,255,0.05);
-border-radius:20px;
-backdrop-filter: blur(12px);
-border:1px solid rgba(255,255,255,0.08);
-box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-transition:0.3s;
+background: rgba(255,255,255,0.6);
+backdrop-filter: blur(10px);
+border-radius:18px;
+border:1px solid rgba(255,255,255,0.4);
+box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+transition:0.25s;
 }
 
 .card:hover{
-transform: translateY(-3px);
+transform: translateY(-2px);
 }
 
 h5{
-color:#94a3b8;
+color:#64748b;
 font-size:14px;
-letter-spacing:0.5px;
 }
 
 h4{
-color:#e2e8f0;
 font-weight:500;
 }
 
-/* Focus Text */
+/* Focus */
 .focus{
-font-size:30px;
+font-size:28px;
 font-weight:600;
-margin-top:10px;
+margin-top:8px;
 }
 
 .focused{
-color:#22c55e;
+color:#16a34a;
 }
 
 .distracted{
-color:#ef4444;
+color:#dc2626;
 }
 
-/* Numbers */
+/* Values */
 #confidence, #hr{
-font-size:22px;
+font-size:20px;
 font-weight:500;
-margin-top:10px;
+margin-top:8px;
 }
 
 .summary{
-font-size:26px;
+font-size:24px;
 font-weight:600;
-margin-top:10px;
+margin-top:8px;
 }
 
 /* Chart */
 #chart{
-height:260px !important;
+height:250px !important;
 }
 
-/* Layout spacing */
+/* Layout */
 .row{
 gap:15px;
 }
 
 .container{
-max-width:1100px;
+max-width:1000px;
 }
 
 </style>
@@ -111,27 +108,27 @@ max-width:1100px;
 
 <div class="header">
 <h1>Smart Desk Buddy</h1>
-<p>Focus Monitoring Dashboard</p>
+<p>Focus Dashboard</p>
 </div>
 
 <div class="row text-center">
 
 <div class="col-md">
-<div class="card p-4">
-<h5>Focus State</h5>
+<div class="card p-3">
+<h5>Focus</h5>
 <div id="focus" class="focus">Loading...</div>
 </div>
 </div>
 
 <div class="col-md">
-<div class="card p-4">
+<div class="card p-3">
 <h5>Confidence</h5>
 <div id="confidence">-</div>
 </div>
 </div>
 
 <div class="col-md">
-<div class="card p-4">
+<div class="card p-3">
 <h5>Heart Rate</h5>
 <div id="hr">-</div>
 </div>
@@ -144,15 +141,15 @@ max-width:1100px;
 <div class="row text-center">
 
 <div class="col-md">
-<div class="card p-4">
-<h5>Focused Sessions</h5>
+<div class="card p-3">
+<h5>Focused</h5>
 <div id="focusCount" class="summary">-</div>
 </div>
 </div>
 
 <div class="col-md">
-<div class="card p-4">
-<h5>Distracted Sessions</h5>
+<div class="card p-3">
+<h5>Distracted</h5>
 <div id="distractCount" class="summary">-</div>
 </div>
 </div>
@@ -163,7 +160,7 @@ max-width:1100px;
 
 <div class="card p-4">
 
-<h4 class="text-center mb-3">Focus Confidence Trend</h4>
+<h4 class="text-center mb-3">Focus Trend</h4>
 
 <canvas id="chart"></canvas>
 
@@ -212,7 +209,7 @@ distractCount++;
 document.getElementById("focusCount").innerText = focusCount;
 document.getElementById("distractCount").innerText = distractCount;
 
-/* Prepare chart data */
+/* Chart Data */
 
 const recentData = data.slice(0,10).reverse();
 
@@ -247,19 +244,19 @@ datasets:[
 {
 label:"Focused",
 data:focusValues,
-borderColor:"#22c55e",
-backgroundColor:"rgba(34,197,94,0.2)",
-borderWidth:3,
-pointRadius:4,
+borderColor:"#16a34a",
+backgroundColor:"rgba(22,163,74,0.15)",
+borderWidth:2,
+pointRadius:3,
 tension:0.4
 },
 {
 label:"Distracted",
 data:distractValues,
-borderColor:"#ef4444",
-backgroundColor:"rgba(239,68,68,0.2)",
-borderWidth:3,
-pointRadius:4,
+borderColor:"#dc2626",
+backgroundColor:"rgba(220,38,38,0.15)",
+borderWidth:2,
+pointRadius:3,
 tension:0.4
 }
 ]
@@ -269,20 +266,18 @@ responsive:true,
 maintainAspectRatio:false,
 plugins:{
 legend:{
-labels:{
-color:"#cbd5f5"
-}
+labels:{color:"#475569"}
 }
 },
 scales:{
 x:{
-ticks:{color:"#94a3b8"}
+ticks:{color:"#64748b"}
 },
 y:{
 min:0,
 max:100,
 ticks:{
-color:"#94a3b8",
+color:"#64748b",
 callback:function(value){
 return value + "%";
 }
@@ -299,7 +294,6 @@ console.error("Error loading data:",error);
 }
 
 loadData();
-
 setInterval(loadData,3000);
 
 </script>
